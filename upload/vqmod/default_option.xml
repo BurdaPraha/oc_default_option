@@ -4,13 +4,18 @@
     <vqmver>2.1.5</vqmver>
     <author>Michal Landsman</author>
 
-    <!-- edit model method "public function getOptionValueDescriptions($option_id)" -->
     <file name="admin/model/catalog/product.php">
+        <!-- edit model method "public function getProductOptions($product_id)" -->
         <operation>
             <search position="after"><![CDATA['weight_prefix'           => $product_option_value['weight_prefix']]]></search>
             <add><![CDATA[,'is_default'               => $product_option_value['is_default']]]></add>
         </operation>
 
+        <!-- edit model method "public function addProduct($data)" and "public function editProduct($product_id, $data)" -->
+        <operation>
+            <search position="replace"><![CDATA[weight_prefix = '" . $this->db->escape($product_option_value['weight_prefix']) . "']]></search>
+            <add><![CDATA[weight_prefix = '" . $this->db->escape($product_option_value['weight_prefix']) . "', is_default = '" . $this->db->escape(isset($product_option_value['is_default']) ? $product_option_value['is_default'] : 0) . "']]></add>
+        </operation>
     </file>
 
     <!-- improve controller method "protected function getForm()" -->
@@ -57,11 +62,10 @@
             <search position="before"><![CDATA[html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';]]></search>
             <add><![CDATA[
 
-            html += '<td class="text-left">';
+            html += '<td class="text-center">';
                 html += '<div class="checkbox">';
                     html += '<label>';
                         html += '<input type="checkbox" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][is_default]" value="1" value="1" onclick="SetSel(this);" />';
-                        html += '<span style="padding: 0px 7px;">default</span>';
                     html += '</label>';
                 html += '</div>';
             html += '</td>';
