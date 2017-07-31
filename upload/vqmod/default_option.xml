@@ -5,39 +5,77 @@
     <author>Michal Landsman</author>
 
     <!-- edit model method "public function getOptionValueDescriptions($option_id)" -->
-    <file name="admin/model/catalog/option.php">
+    <file name="admin/model/catalog/product.php">
         <operation>
-            <search position="after"><![CDATA['sort_order'               => $option_value['sort_order']]]></search>
-            <add><![CDATA[,'is_default'               => $option_value['is_default']]]></add>
+            <search position="after"><![CDATA['weight_prefix'           => $product_option_value['weight_prefix']]]></search>
+            <add><![CDATA[,'is_default'               => $product_option_value['is_default']]]></add>
         </operation>
-        <operation>
-            <search position="replace"><![CDATA[sort_order = '" . (int)$option_value['sort_order'] . "']]></search>
-            <add><![CDATA[sort_order = '" . (int)$option_value['sort_order'] . "', is_default = '" . (isset($option_value['is_default']) ? $option_value['is_default'] : 0) . "']]></add>
-        </operation>
+
     </file>
 
     <!-- improve controller method "protected function getForm()" -->
-    <file name="admin/controller/catalog/option.php">
+    <file name="admin/controller/catalog/product.php">
         <operation>
-            <search position="after"><![CDATA['sort_order'               => $option_value['sort_order']]]></search>
-            <add><![CDATA[,'is_default'               => $option_value['is_default']]]></add>
+            <search position="after"><![CDATA['weight_prefix'           => $product_option_value['weight_prefix']]]></search>
+            <add><![CDATA[,'is_default'               => $product_option_value['is_default']]]></add>
         </operation>
     </file>
 
     <!-- improve option form template -->
-    <file name="admin/view/template/catalog/option_form.tpl">
+    <file name="admin/view/template/catalog/product_form.tpl">
+
+        <!-- add heading column -->
         <operation>
-            <search position="after"><![CDATA[<td class="text-right"><?php echo $entry_sort_order; ?></td>]]></search>
-            <add><![CDATA[<td class="text-right">Is default</td>]]></add>
+            <search position="after"><![CDATA[<td class="text-right"><?php echo $entry_weight; ?></td>]]></search>
+            <add><![CDATA[<td class="text-right">Default</td>]]></add>
         </operation>
+
+        <!-- improve javascript heading template -->
         <operation>
-            <search position="after"><![CDATA[<td class="text-right"><input type="text" name="option_value[<?php echo $option_value_row; ?>][sort_order]" value="<?php echo $option_value['sort_order']; ?>" class="form-control" /></td>]]></search>
-            <add><![CDATA[<td class="text-center"><div class="checkbox"><label><input type="checkbox" name="option_value[<?php echo $option_value_row; ?>][is_default]" value="1" <?php echo ('1' == $option_value['is_default'] ? 'checked="checked' : ''); ?> onclick="SetSel(this);" /><span style="padding: 0px 7px;">default</span></label></div></td>]]></add>
+            <search position="after"><![CDATA[html += '        <td class="text-right"><?php echo $entry_weight; ?></td>';]]></search>
+            <add><![CDATA[html += '        <td class="text-right">Default</td>';]]></add>
         </operation>
+
+        <!-- add column with checkbox -->
         <operation>
-            <search position="replace"><![CDATA[<td colspan="3"></td>]]></search>
-            <add><![CDATA[<td colspan="4"></td>]]></add>
+            <search position="before"><![CDATA[<td class="text-left"><button type="button" onclick="$(this).tooltip('destroy');$('#option-value-row<?php echo $option_value_row; ?>').remove();" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>]]></search>
+            <add><![CDATA[
+
+            <td class="text-center">
+                <div class="checkbox">
+                    <label style="display: block">
+                        <input type="checkbox" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][is_default]" value="1" value="1" <?php echo ('1' == $product_option_value['is_default'] ? 'checked="checked' : ''); ?> onclick="SetSel(this);" />
+                    </label>
+                </div>
+            </td>
+
+            ]]></add>
         </operation>
+
+        <!-- improve javascript body template -->
+        <operation>
+            <search position="before"><![CDATA[html += '  <td class="text-left"><button type="button" onclick="$(this).tooltip(\'destroy\');$(\'#option-value-row' + option_value_row + '\').remove();" data-toggle="tooltip" rel="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';]]></search>
+            <add><![CDATA[
+
+            html += '<td class="text-left">';
+                html += '<div class="checkbox">';
+                    html += '<label>';
+                        html += '<input type="checkbox" name="product_option[' + option_row + '][product_option_value][' + option_value_row + '][is_default]" value="1" value="1" onclick="SetSel(this);" />';
+                        html += '<span style="padding: 0px 7px;">default</span>';
+                    html += '</label>';
+                html += '</div>';
+            html += '</td>';
+
+            ]]></add>
+        </operation>
+
+        <!-- change footer -->
+        <operation>
+            <search position="replace"><![CDATA[<td colspan="6"></td>]]></search>
+            <add><![CDATA[<td colspan="7"></td>]]></add>
+        </operation>
+
+        <!-- add javascript function aka radio -->
         <operation>
             <search position="after"><![CDATA[<script type="text/javascript"><!--]]></search>
             <add><![CDATA[
