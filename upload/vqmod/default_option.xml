@@ -88,22 +88,20 @@
 
             function SetSel(elem)
             {
-              var elems = document.getElementsByTagName("input");
+                var tbody           = elem.parentNode.parentNode.parentNode.parentNode.parentNode;
+                var elems           = tbody.getElementsByTagName("input");
+                var currentState    = elem.checked;
+                var elemsLength     = elems.length;
 
-              console.log(elems);
-
-              var currentState = elem.checked;
-              var elemsLength = elems.length;
-
-              for(i=0; i<elemsLength; i++)
-              {
-                if(elems[i].type === "checkbox")
+                for(i=0; i<elemsLength; i++)
                 {
-                   elems[i].checked = false;
+                    if(elems[i].type === "checkbox")
+                    {
+                       elems[i].checked = false;
+                    }
                 }
-              }
 
-              elem.checked = currentState;
+                elem.checked = currentState;
             }
 
 
