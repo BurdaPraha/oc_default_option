@@ -31,14 +31,16 @@
 
         <!-- add heading column -->
         <operation>
-            <search position="after"><![CDATA[<td class="text-right"><?php echo $entry_weight; ?></td>]]></search>
+            <search position="after" index="1"><![CDATA[<td class="text-right"><?php echo $entry_weight; ?></td>]]></search>
             <add><![CDATA[<td class="text-right">Default</td>]]></add>
         </operation>
 
         <!-- improve javascript heading template -->
         <operation>
             <search position="after"><![CDATA[html += '        <td class="text-right"><?php echo $entry_weight; ?></td>';]]></search>
-            <add><![CDATA[html += '        <td class="text-right">Default</td>';]]></add>
+            <add><![CDATA[
+                html += '        <td class="text-right">Default</td>';
+            ]]></add>
         </operation>
 
         <!-- add column with checkbox -->
@@ -87,6 +89,9 @@
             function SetSel(elem)
             {
               var elems = document.getElementsByTagName("input");
+
+              console.log(elems);
+
               var currentState = elem.checked;
               var elemsLength = elems.length;
 
