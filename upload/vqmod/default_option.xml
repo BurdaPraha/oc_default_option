@@ -3,4 +3,65 @@
     <version>0.0.1</version>
     <vqmver>2.1.5</vqmver>
     <author>Michal Landsman</author>
+
+    <!-- edit model method "public function getOptionValueDescriptions($option_id)" -->
+    <file name="admin/model/catalog/option.php">
+        <operation>
+            <search position="after"><![CDATA['sort_order'               => $option_value['sort_order']]]></search>
+            <add><![CDATA[,'is_default'               => $option_value['is_default']]]></add>
+        </operation>
+        <operation>
+            <search position="replace"><![CDATA[sort_order = '" . (int)$option_value['sort_order'] . "']]></search>
+            <add><![CDATA[sort_order = '" . (int)$option_value['sort_order'] . "', is_default = '" . (isset($option_value['is_default']) ? $option_value['is_default'] : 0) . "']]></add>
+        </operation>
+    </file>
+
+    <!-- improve controller method "protected function getForm()" -->
+    <file name="admin/controller/catalog/option.php">
+        <operation>
+            <search position="after"><![CDATA['sort_order'               => $option_value['sort_order']]]></search>
+            <add><![CDATA[,'is_default'               => $option_value['is_default']]]></add>
+        </operation>
+    </file>
+
+    <!-- improve option form template -->
+    <file name="admin/view/template/catalog/option_form.tpl">
+        <operation>
+            <search position="after"><![CDATA[<td class="text-right"><?php echo $entry_sort_order; ?></td>]]></search>
+            <add><![CDATA[<td class="text-right">Is default</td>]]></add>
+        </operation>
+        <operation>
+            <search position="after"><![CDATA[<td class="text-right"><input type="text" name="option_value[<?php echo $option_value_row; ?>][sort_order]" value="<?php echo $option_value['sort_order']; ?>" class="form-control" /></td>]]></search>
+            <add><![CDATA[<td class="text-center"><div class="checkbox"><label><input type="checkbox" name="option_value[<?php echo $option_value_row; ?>][is_default]" value="1" <?php echo ('1' == $option_value['is_default'] ? 'checked="checked' : ''); ?> onclick="SetSel(this);" /><span style="padding: 0px 7px;">default</span></label></div></td>]]></add>
+        </operation>
+        <operation>
+            <search position="replace"><![CDATA[<td colspan="3"></td>]]></search>
+            <add><![CDATA[<td colspan="4"></td>]]></add>
+        </operation>
+        <operation>
+            <search position="after"><![CDATA[<script type="text/javascript"><!--]]></search>
+            <add><![CDATA[
+
+            function SetSel(elem)
+            {
+              var elems = document.getElementsByTagName("input");
+              var currentState = elem.checked;
+              var elemsLength = elems.length;
+
+              for(i=0; i<elemsLength; i++)
+              {
+                if(elems[i].type === "checkbox")
+                {
+                   elems[i].checked = false;
+                }
+              }
+
+              elem.checked = currentState;
+            }
+
+
+            ]]></add>
+        </operation>
+    </file>
+
 </modification>
