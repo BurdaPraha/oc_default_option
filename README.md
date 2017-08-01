@@ -1,6 +1,8 @@
 # Option selected by default for [OpenCart 2.x](https://github.com/opencart/opencart)
 
-for better UX or internal needs
+Better UX for your visitors! You can setup a default options for add to the cart from homepage or category.
+
+## Preview
 
 ![Category add to cart](./doc/demo_video.gif)
 
