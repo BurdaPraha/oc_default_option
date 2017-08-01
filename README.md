@@ -2,9 +2,11 @@
 
 for better UX or internal needs
 
+![Category add to cart](./doc/demo_video.gif)
+
 ![Admin](./doc/admin_preview.png)
 
-![Catalog](./doc/catalog_preview.png)
+![Catalog](./doc/catalog_product.png)
 
 ## Installation
 
