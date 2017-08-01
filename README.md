@@ -2,6 +2,10 @@
 
 for better UX or internal needs
 
+![Admin](./doc/admin_preview.png)
+
+![Catalog](./doc/catalog_preview.png)
+
 ## Installation
 
 1. Requiring installed [vQmod](https://github.com/vqmod/vqmod) because vQmod doesn't support installing via composer itself.
