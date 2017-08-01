@@ -1,6 +1,6 @@
 <modification>
     <id>Option selected by default</id>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <vqmver>2.1.5</vqmver>
     <author>Michal Landsman</author>
 
@@ -111,7 +111,9 @@
         </operation>
     </file>
 
-    <!-- catalog improvements -->
+
+    <!-- catalog - product page improvements -->
+
 
     <file name="catalog/model/catalog/product.php">
         <!-- edit model method "public function getProductOptions($product_id)" -->
@@ -149,6 +151,79 @@
             <search position="replace"><![CDATA[<input type="checkbox" name="option[<?php echo $option['product_option_id']; ?>][]" value="<?php echo $option_value['product_option_value_id']; ?>" />]]></search>
             <add><![CDATA[<input type="checkbox" name="option[<?php echo $option['product_option_id']; ?>][]" value="<?php echo $option_value['product_option_value_id']; ?>" <?php echo (1 == $option_value['is_default'] ? 'checked="checked"' : ''); ?> />]]></add>
         </operation>
+    </file>
+
+
+    <!-- catalog - category page (add to cart from category) improvements -->
+
+
+    <!-- edit controller method "public function add()" -->
+    <file name="catalog/controller/checkout/cart.php">
+
+        <!-- create empty array for additional default options -->
+        <operation>
+            <search position="before"><![CDATA[foreach ($product_options as $product_option) {]]></search>
+            <add><![CDATA[
+            $default_options = [];
+            ]]>
+            </add>
+        </operation>
+
+        <!-- improve condition about default options -->
+        <operation>
+            <search position="replace"><![CDATA[$json['error']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);]]></search>
+            <add><![CDATA[
+
+                    foreach($product_option['product_option_value'] as $row => $val)
+                    {
+                        if(1 == $val['is_default'])
+                        {
+                            if('checkbox' == $product_option['type'])
+                            {
+                                $_default_val = [$val['product_option_value_id']];
+                            }
+                            else
+                            {
+                                $_default_val = (int)$val['product_option_value_id'];
+                            }
+
+                            $default_options[$product_option['product_option_id']] = $_default_val;
+                        }
+                    }
+
+                    if(0 === count($default_options))
+                    {
+                        $json['error']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+                    }
+
+            ]]></add>
+        </operation>
+
+        <!-- merge additional options with standard sended option -->
+        <operation>
+            <search position="before"><![CDATA[if (isset($this->request->post['recurring_id'])) {]]></search>
+            <add><![CDATA[
+
+            if(count($default_options) > 0)
+            {
+                $filtered_default_options   = array_filter($default_options);
+                $new_option                 = array_merge($option, $filtered_default_options);
+                //$option                   = array_filter($new_option);
+                $option                     = $default_options;
+            }
+
+            ]]></add>
+        </operation>
+
+        <!--
+        <operation>
+            <search position="replace"><![CDATA[$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));]]></search>
+            <add><![CDATA[
+                $json['success'] = $option;
+            ]]></add>
+        </operation>
+        -->
+
     </file>
 
 </modification>
