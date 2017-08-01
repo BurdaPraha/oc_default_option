@@ -4,6 +4,8 @@
     <vqmver>2.1.5</vqmver>
     <author>Michal Landsman</author>
 
+    <!-- admin improvements -->
+
     <file name="admin/model/catalog/product.php">
         <!-- edit model method "public function getProductOptions($product_id)" -->
         <operation>
@@ -106,6 +108,46 @@
 
 
             ]]></add>
+        </operation>
+    </file>
+
+    <!-- catalog improvements -->
+
+    <file name="catalog/model/catalog/product.php">
+        <!-- edit model method "public function getProductOptions($product_id)" -->
+        <operation>
+            <search position="after" index="1"><![CDATA['weight_prefix'           => $product_option_value['weight_prefix']]]></search>
+            <add><![CDATA[,'is_default'           => $product_option_value['is_default']]]></add>
+        </operation>
+    </file>
+
+    <!-- edit controller method "public function index()" -->
+    <file name="catalog/controller/product/product.php">
+        <!-- load column from db -->
+        <operation>
+            <search position="after"><![CDATA['price_prefix'            => $option_value['price_prefix']]]></search>
+            <add><![CDATA[,'is_default'            => $option_value['is_default']]]></add>
+        </operation>
+    </file>
+
+    <!-- edit template - make it checked/selected if is default -->
+    <file name="catalog/view/theme/*/template/product/product.tpl">
+        <!-- added support for select -->
+        <operation>
+            <search position="replace"><![CDATA[<option value="<?php echo $option_value['product_option_value_id']; ?>"><?php echo $option_value['name']; ?>]]></search>
+            <add><![CDATA[<option value="<?php echo $option_value['product_option_value_id']; ?>" <?php echo (1 == $option_value['is_default'] ? 'selected' : ''); ?>><?php echo $option_value['name']; ?>]]></add>
+        </operation>
+
+        <!-- added support for input[type=radio] -->
+        <operation>
+            <search position="replace"><![CDATA[<input type="radio" name="option[<?php echo $option['product_option_id']; ?>]" value="<?php echo $option_value['product_option_value_id']; ?>" />]]></search>
+            <add><![CDATA[<input type="radio" name="option[<?php echo $option['product_option_id']; ?>]" value="<?php echo $option_value['product_option_value_id']; ?>" <?php echo (1 == $option_value['is_default'] ? 'checked="checked"' : ''); ?> />]]></add>
+        </operation>
+
+        <!-- added support for input[type=checkbox] -->
+        <operation>
+            <search position="replace"><![CDATA[<input type="checkbox" name="option[<?php echo $option['product_option_id']; ?>][]" value="<?php echo $option_value['product_option_value_id']; ?>" />]]></search>
+            <add><![CDATA[<input type="checkbox" name="option[<?php echo $option['product_option_id']; ?>][]" value="<?php echo $option_value['product_option_value_id']; ?>" <?php echo (1 == $option_value['is_default'] ? 'checked="checked"' : ''); ?> />]]></add>
         </operation>
     </file>
 
